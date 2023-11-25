@@ -1,0 +1,14 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+main{
+    height: 99%;
+    width: auto;
+    display: flex;
+}
+canvas{
+    padding: 0.1%;
+    margin: auto;
+}
