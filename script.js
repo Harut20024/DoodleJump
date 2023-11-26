@@ -2,18 +2,26 @@ let doodler;
 let gap;
 let platforms = [];
 let score = 0;
-let doodleLeftImg, doodleRigthImg, platformImg;
+let doodleLeftImg, doodleRigthImg,doodleJumpImg, platformImg,monsterImg1,monsterImg2;
 let backgraundImg;
 let speed = 5;
 let jumpCount = 0;
 let startY
 let goingLeft = true
+let MonstrIn = false
+let MonsterArr = []
+let isJumping = false;
+
 
 function preload() {
+    monsterImg1 = loadImage('photos/monsters/1.png')
+    monsterImg2 = loadImage('photos/monsters/2.png')
     backgraundImg = loadImage('photos/fone.jpg');
     doodleLeftImg = loadImage('photos/doodler-left.png');
     doodleRigthImg = loadImage('photos/doodler-right.png');
     platformImg = loadImage('photos/platform.png');
+    doodleJumpImg = loadImage('photos/doodle-jump.png');
+    MonsterArr = [monsterImg1,monsterImg2];
 }
 
 function setup() {
@@ -44,7 +52,11 @@ function draw() {
 
     while (platforms.length < 6 || platforms[platforms.length - 1].y > -transY) {
         let newPlatformY = platforms.length === 0 ? height : platforms[platforms.length - 1].y - gap;
-        platforms.push(new Platform(random(width), newPlatformY, platformImg));
+        let randNum = Math.floor(Math.random()*7)
+        let randNumforMonster = Math.floor(Math.random()*2)
+        if(randNum===1)platforms.push(new Platform(random(width - 90), newPlatformY, platformImg,true,MonsterArr[randNumforMonster])); 
+        else platforms.push(new Platform(random(width - 90), newPlatformY, platformImg,false,MonsterArr[randNumforMonster]));
+
     }
 
     for (let platform of platforms) {
@@ -75,6 +87,7 @@ your score is ${score}`
         return;
     }
     if (transY <= startY + 300) {
+        isJumping = false
         fill(0, 150, 0);
         rect(0, height, width, 100);
         jumpCount = 0
@@ -82,12 +95,15 @@ your score is ${score}`
 
     if (jumpCount <= 15 && (mouseIsPressed || keyIsDown(UP_ARROW) || keyIsDown(32))) {
         jumpCount++;
+        isJumping = true
         doodler.jump();
     }
     if (keyIsDown(LEFT_ARROW)) {
+        isJumping = false
         doodler.move('left', speed);
         goingLeft = true
     } else if (keyIsDown(RIGHT_ARROW)) {
+        isJumping = false
         doodler.move('right', speed);
         goingLeft = false
     }
@@ -111,7 +127,10 @@ function restartGame() {
     score = 0;
     platforms = [];
     for (let i = 1; i <= 6; i++) {
-        platforms.push(new Platform(random(width) - 10, height - i * gap, platformImg));
+        let randNum = Math.floor(Math.random()*7)
+        if(randNum===1)platforms.push(new Platform(random(width - 90), height - i * gap, platformImg,true,monsterImg1)); 
+        else platforms.push(new Platform(random(width - 90), height - i * gap, platformImg,false,monsterImg1));
+
     }
     doodler = new Doodle(width / 2, height - 50, doodleLeftImg, doodleRigthImg);
 

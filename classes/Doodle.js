@@ -32,6 +32,19 @@ class Doodle {
                     this.position.x + this.size / 2 >= platform.x &&
                     this.position.x - this.size / 2 <= platform.x + platform.width
                 ) {
+                    isJumping = false
+                    if (platform.monsterIs === true) {
+                        resetMatrix();
+                        fill(255, 0, 0);
+                        textSize(50);
+                        textAlign(CENTER, CENTER);
+                        text(`You Lose!
+your score is ${score}`
+                            , width / 2, height / 2);
+                        noLoop(); // Stop the draw loop
+                        setTimeout(restartGame, 2000);
+                        return;
+                    }
                     this.jump();
                     jumpCount = 0
                     break;
@@ -49,7 +62,9 @@ class Doodle {
 
     show() {
         let imgToShow = goingLeft ? this.imgLeft : this.imgRight;
-        image(imgToShow, this.position.x, this.position.y - this.size / 2, this.size, this.size);
+        !isJumping ?  image(imgToShow, this.position.x, this.position.y - this.size / 2, this.size, this.size):
+        image(doodleJumpImg, this.position.x, this.position.y - this.size / 2, this.size+20, this.size+20)
+        
     }
     move(direction, speed) {
         if (direction === 'left') {
