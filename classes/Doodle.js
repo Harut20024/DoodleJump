@@ -24,13 +24,13 @@ class Doodle {
 
         for (let platform of platforms) {
             if (
-                this.position.y + this.size / 2 <= platform.y + 3 &&
+                this.position.y + this.size / 2 <= platform.y + 1 &&
                 this.position.y + this.size / 2 + this.velocity.y >= platform.y &&
                 this.velocity.y > 0
             ) {
                 if (
-                    this.position.x + this.size / 2 >= platform.x &&
-                    this.position.x - this.size / 2 <= platform.x + platform.width
+                    this.position.x + this.size / 2 >= platform.x - 20 &&
+                    this.position.x - this.size / 2 <= platform.x + platform.width - 50
                 ) {
                     isJumping = false
                     if (platform.monsterIs === true) {
@@ -62,9 +62,9 @@ your score is ${score}`
 
     show() {
         let imgToShow = goingLeft ? this.imgLeft : this.imgRight;
-        !isJumping ?  image(imgToShow, this.position.x, this.position.y - this.size / 2, this.size, this.size):
-        image(doodleJumpImg, this.position.x, this.position.y - this.size / 2, this.size+20, this.size+20)
-        
+        !isJumping ? image(imgToShow, this.position.x, this.position.y - this.size / 2, this.size, this.size) :
+            image(doodleJumpImg, this.position.x, this.position.y - this.size / 2, this.size + 20, this.size + 20)
+
     }
     move(direction, speed) {
         if (direction === 'left') {
