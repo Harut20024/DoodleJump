@@ -8,6 +8,8 @@ class Doodle {
         this.size = 70;
         this.imgLeft = imgLeft;
         this.imgRight = imgRight;
+        this.isFlying = false;
+        this.flightStartTime = 0;
     }
 
     preload() {
@@ -21,6 +23,11 @@ class Doodle {
         if (this.velocity.y < -9) {
             this.velocity.y = -9;
         }
+        if (this.isFlying && millis() - this.flightStartTime > 3200) {
+            this.isFlying = false;
+            this.velocity = createVector(0, 0); // Reset the velocity after flying
+            this.acceleration = createVector(0, 0.98); // Reapply gravity
+        }
 
         for (let platform of platforms) {
             if (
@@ -29,19 +36,27 @@ class Doodle {
                 this.velocity.y > 0
             ) {
                 if (
-                    this.position.x + this.size / 2 >= platform.x - 20 &&
-                    this.position.x - this.size / 2 <= platform.x + platform.width - 50
+                    this.position.x + this.size / 2 >= platform.x + 20 &&
+                    this.position.x - this.size / 2 <= platform.x + platform.width 
                 ) {
                     isJumping = false
+
+                    if (platform.jet === true && !this.isFlying && this.position.y + this.size / 2 + this.velocity.y >= platform.y) {
+                        platform.jet = false;
+                        this.startFlight(-40);
+                    }
+
+
                     if (platform.monsterIs === true) {
+                        if (!looseSound.isPlaying()) looseSound.play();
                         resetMatrix();
                         fill(255, 0, 0);
                         textSize(50);
                         textAlign(CENTER, CENTER);
                         text(`You Lose!
-your score is ${score}`
+    your score is ${score}`
                             , width / 2, height / 2);
-                        noLoop(); // Stop the draw loop
+                        noLoop();
                         setTimeout(restartGame, 2000);
                         return;
                     }
@@ -61,9 +76,18 @@ your score is ${score}`
 
 
     show() {
-        let imgToShow = goingLeft ? this.imgLeft : this.imgRight;
-        !isJumping ? image(imgToShow, this.position.x, this.position.y - this.size / 2, this.size, this.size) :
-            image(doodleJumpImg, this.position.x, this.position.y - this.size / 2, this.size + 20, this.size + 20)
+        let imgToShow;
+        if (this.isFlying) {
+            image(doodleInJet, this.position.x - this.size / 2, this.position.y - this.size / 2, this.size + 50, this.size + 30);
+
+        } else if (isJumping) {
+            image(doodleJumpImg, this.position.x - this.size / 2, this.position.y - this.size / 2, this.size + 20, this.size + 20);
+
+        } else if (!isJumping) {
+            imgToShow = goingLeft ? this.imgLeft : this.imgRight;
+            image(imgToShow, this.position.x - this.size / 2, this.position.y - this.size / 2, this.size, this.size);
+
+        }
 
     }
     move(direction, speed) {
@@ -83,5 +107,15 @@ your score is ${score}`
 
     jump() {
         this.velocity.y = -30;
+
     }
+    startFlight() {
+        if (!jetSound.isPlaying()) jetSound.play();
+        this.isFlying = true;
+        this.flightStartTime = millis();
+        this.velocity = createVector(0, -15); // Strong initial upward velocity
+        this.acceleration = createVector(0, -4); // Constant upward force
+    }
+
+
 }
