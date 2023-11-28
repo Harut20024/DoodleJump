@@ -1,4 +1,6 @@
 # Doodle Jump Game
+![Portfollio](https://github.com/Harut20024/DoodleJump/blob/main/photos/screen.png)
+
 Welcome to the Doodle Jump Game, an exciting and fun platformer game that promises to keep you entertained! This game, developed with passion and creativity, allows players to embark on a delightful jumping adventure. Below are the key features and functionalities that make this game a must-try.
 
 ## Game Overview
